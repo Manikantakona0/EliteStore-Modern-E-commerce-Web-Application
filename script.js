@@ -9,10 +9,13 @@ const categories = [
 ];
 
 
+const ITEMS_PER_PAGE = 20;
+let currentPageNumber = 1;
+
 // Category mapping function
 
-  function mapCategory(cat, name = "") {
-  const text = (cat + " " + name).toLowerCase();
+function mapCategory(cat, name = "") {
+const text = (cat + " " + name).toLowerCase();
 
   // SPORTS
   if (
@@ -386,6 +389,8 @@ function updateNavigation(activePage) {
 function showProductsPage(category = null) {
     currentCategory = category;
 
+    currentPageNumber = 1;
+
     // reset sidebar filters
     filters.categories = [];
 
@@ -473,23 +478,31 @@ function getFilteredProducts() {
     return filtered;
 }
 
-function renderProducts(productsToRender) {
+function renderProducts(productList) {
     const productsGrid = document.getElementById('productsGrid');
     const noProducts = document.getElementById('noProducts');
-    
+
     if (!productsGrid) return;
 
-    if (productsToRender.length === 0) {
+    if (productList.length === 0) {
         productsGrid.style.display = 'none';
-        noProducts.style.display = 'block';
+        if (noProducts) noProducts.style.display = 'block';
         return;
     }
 
     productsGrid.style.display = 'grid';
-    noProducts.style.display = 'none';
+    if (noProducts) noProducts.style.display = 'none';
 
-    productsGrid.innerHTML = productsToRender.map(product => createProductCard(product)).join('');
-    updateProductsCount(productsToRender.length);
+    const start = (currentPageNumber - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+
+    const paginatedProducts = productList.slice(start, end);
+
+    productsGrid.innerHTML = paginatedProducts.map(product => createProductCard(product)).join('');
+
+    updateProductsCount(productList.length);
+
+    renderPagination(productList.length);
 }
 
 function updateProductsHeader() {
@@ -1089,4 +1102,28 @@ function hideLoading() {
     if (loadingOverlay) {
         loadingOverlay.classList.remove('active');
     }
+}
+function renderPagination(totalItems) {
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+    const productsGrid = document.getElementById('productsGrid');
+
+    let paginationHTML = `<div class="pagination">`;
+
+    for (let i = 1; i <= totalPages; i++) {
+        paginationHTML += `
+            <button class="page-btn ${i === currentPageNumber ? 'active' : ''}" 
+                onclick="changePage(${i})">
+                ${i}
+            </button>
+        `;
+    }
+
+    paginationHTML += `</div>`;
+
+    productsGrid.innerHTML += paginationHTML;
+}
+
+function changePage(page) {
+    currentPageNumber = page;
+    renderProducts(getFilteredProducts());
 }
