@@ -1,4 +1,4 @@
-# 🛒 FlipkartStore — Premium E-commerce Website
+# 🛒 EliteStore — Premium E-commerce Website
 
 A fully functional, responsive e-commerce frontend built with vanilla HTML, CSS, and JavaScript. Features product browsing, filtering, cart management, and user authentication — all running in the browser without any backend.
 
