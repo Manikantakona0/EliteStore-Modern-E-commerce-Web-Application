@@ -1841,3 +1841,21 @@ body {
         justify-content: center;
     }
 }
+.pagination {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.page-btn {
+  margin: 5px;
+  padding: 8px 12px;
+  border: none;
+  background: #e5e7eb;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.page-btn.active {
+  background: #1e40af;
+  color: white;
+}
